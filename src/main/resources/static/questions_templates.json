@@ -1,0 +1,45 @@
+{
+  "bloom": {
+    "remembering": [
+      { "template": "List key facts about {concept}." },
+      { "template": "What do you mean by {concept}?" }
+    ],
+    "understanding": [
+      { "template": "Explain the concept of {concept} in your own words." },
+      { "template": "How would you describe {concept} to a beginner?" }
+    ],
+    "applying": [
+      { "template": "Demonstrate how to use {concept} in a real-world scenario." },
+      { "template": "Implement {concept} in a basic application." }
+    ],
+    "analyzing": [
+      { "template": "Differentiate between {concept1} and {concept2} with examples." },
+      { "template": "What are the components of {concept} and how do they interact?" }
+    ],
+    "evaluating": [
+      { "template": "Assess the effectiveness of {concept} in solving {problem}." },
+      { "template": "Justify the use of {concept} over {alternative}." }
+    ],
+    "creating": [
+      { "template": "Design a {tool} using {concept} for {purpose}." },
+      { "template": "Formulate a new approach to apply {concept}." }
+    ]
+  },
+  "dave": {
+    "imitation": [
+      { "template": "Observe and replicate the steps for {task}." }
+    ],
+    "manipulation": [
+      { "template": "Practice the method of {task} with assistance." }
+    ],
+    "precision": [
+      { "template": "Accurately perform {task} and document the results." }
+    ],
+    "articulation": [
+      { "template": "Integrate {skill1} and {skill2} to accomplish {goal}." }
+    ],
+    "naturalization": [
+      { "template": "Perform {task} instinctively under varied conditions." }
+    ]
+  }
+}

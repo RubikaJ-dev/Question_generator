@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taxonomy Question Generator</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f9;
+          padding: 2rem;
+        }
+        .container {
+          max-width: 800px;
+          margin: auto;
+          background: white;
+          padding: 2rem;
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+          text-align: center;
+          margin-bottom: 1rem;
+        }
+        label {
+          display: block;
+          margin-top: 1rem;
+          font-weight: bold;
+        }
+        textarea, input, select, button {
+          width: 100%;
+          padding: 0.5rem;
+          margin-top: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+        button {
+          background-color: #007bff;
+          color: white;
+          margin-top: 1rem;
+          cursor: pointer;
+        }
+        button:hover {
+          background-color: #0056b3;
+        }
+        .output {
+          margin-top: 2rem;
+          white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Question Generator</h1>
+    <label for="taxonomy">Select Taxonomy:</label>
+    <select id="taxonomy">
+        <option value="bloom">Bloom's Taxonomy</option>
+        <option value="dave">Dave's Taxonomy</option>
+    </select>
+
+    <label for="content">Paste Content Here:</label>
+    <textarea id="content" rows="10"></textarea>
+
+    <label for="numQuestions">Number of Questions:</label>
+    <input type="number" id="numQuestions" min="1" max="20" value="5" />
+
+    <button id="generateBtn">Generate Questions</button>
+
+    <div class="output" id="output"></div>
+</div>
+
+<script>
+    let templates = null;
+
+      // Load the templates JSON file asynchronously
+      async function loadTemplates() {
+        try {
+          const response = await fetch('/questions_templates.json');
+          if (!response.ok) throw new Error('Failed to load templates JSON.');
+          templates = await response.json();
+        } catch (error) {
+          document.getElementById('output').textContent = 'Error loading templates: ' + error.message;
+        }
+      }
+
+      // Extract concepts (simple approach: unique words longer than 4 letters)
+      function extractConcepts(content) {
+        const words = content.toLowerCase().match(/\b[a-z]{5,}\b/g) || [];
+        return [...new Set(words)].slice(0, 10);
+      }
+
+      // Pick random element from array
+      function getRandom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+
+      function generateQuestions() {
+        if (!templates) {
+          document.getElementById('output').textContent = 'Templates not loaded yet.';
+          return;
+        }
+
+        const taxonomy = document.getElementById('taxonomy').value;
+        const content = document.getElementById('content').value.trim();
+        const numQuestions = parseInt(document.getElementById('numQuestions').value);
+        const output = document.getElementById('output');
+
+        if (!content || numQuestions <= 0) {
+          output.textContent = 'Please provide valid content and number of questions.';
+          return;
+        }
+
+        const concepts = extractConcepts(content);
+        const taxTemplates = templates[taxonomy];
+        const levels = Object.keys(taxTemplates);
+        const questions = [];
+
+        for (let i = 0; i < numQuestions; i++) {
+          const level = levels[i % levels.length];
+          const levelTemplates = taxTemplates[level];
+          const templateObj = getRandom(levelTemplates);
+          let question = templateObj.template;
+
+          // Replace placeholders with random concepts or defaults
+          question = question.replace(/{content}/g, getRandom(concepts) || 'content');
+          question = question.replace(/{concept1}/g, getRandom(concepts) || 'concept1');
+          question = question.replace(/{concept2}/g, getRandom(concepts) || 'concept2');
+          question = question.replace(/{problem}/g, 'a relevant issue');
+          question = question.replace(/{alternative}/g, getRandom(concepts) || 'alternative');
+          question = question.replace(/{tool}/g, 'a basic tool');
+          question = question.replace(/{purpose}/g, 'a specific purpose');
+          question = question.replace(/{task}/g, getRandom(concepts) || 'task');
+          question = question.replace(/{skill1}/g, getRandom(concepts) || 'skill1');
+          question = question.replace(/{skill2}/g, getRandom(concepts) || 'skill2');
+          question = question.replace(/{goal}/g, 'an educational goal');
+
+          questions.push(`(${level.charAt(0).toUpperCase() + level.slice(1)}) ${question}`);
+        }
+
+        output.textContent = questions.join('\n\n');
+      }
+
+      document.getElementById('generateBtn').addEventListener('click', generateQuestions);
+
+      // Load templates on page load
+      window.onload = loadTemplates;
+</script>
+</script>
+</body>
+</html>
